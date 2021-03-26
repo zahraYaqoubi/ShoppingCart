@@ -17,13 +17,13 @@ export default {
   components: {
     "my-header": Header,
     "slide-show": SlideShow
-  }
+  },
 };
 </script>
 
 <style scoped>
 .home {
-    padding-right: 10px;
+  padding-right: 10px;
   padding-left: 10px;
   margin: 0px;
   background-image: url("../assets/background.jpg");
