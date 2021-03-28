@@ -5,11 +5,7 @@ export default createStore({
   state: {
     sellers: [],
     addresses: [{ name: 'مهدی خدادادی', addressInfo: 'قم خیابان شهدا کوچه ۳۲' }, { name: 'محسن خدادادی', addressInfo: 'قم خیابان بنیاد کوچه ۱۲' }],
-    totalPrice: [],
     paymentGate: ['بانک سامان', 'بانک پاسارگاد', 'آسان پرداخت'],
-    numberOfProducts: [],
-    price: [],
-    primaryPrice: [],
 
   },
   getters: {
@@ -17,10 +13,9 @@ export default createStore({
       var finalPrice = 0;
       for (var i = 0; i < state.sellers.length; i++) {
         for (var j = 0; j < state.sellers[i].products.length; j++) {
-          finalPrice += state.price[i][j];
+          finalPrice += state.sellers[i].products[j].pricePerNumber;
         }
       }
-      // console.log('finalPrice: ' + finalPrice);
       return finalPrice;
     },
   },
@@ -32,22 +27,15 @@ export default createStore({
           state.sellers = response.data.vendors;
           // this.getPersianNumbers();
           console.log("response.data.vendors: " + response.data.vendors.length);
-          var p, pp, np;
-          for (var i = 0; i < response.data.vendors.length; i++) {
-            p = [];
-            pp = [];
-            np = [];
-            for (var j = 0; j < response.data.vendors[i].products.length; j++) {
-              p.push(response.data.vendors[i].products[j].price);
-              pp.push(response.data.vendors[i].products[j].primaryPrice);
-              np.push(1);
-              
-              // console.log("price " + i + ": " + state.price[i][j]);
-              // console.log("primaryPrice " + i + ": " + state.primaryPrice[i][j]);
+          for (var i = 0; i < state.sellers.length; i++) {
+            for (var j = 0; j < state.sellers[i].products.length; j++) {
+              state.sellers[i].products[j].pricePerNumber = state.sellers[i].products[j].price;
+              state.sellers[i].products[j].primaryPricePerNumber = state.sellers[i].products[j].primaryPrice;
+              state.sellers[i].products[j].numberOfProducts = 1;
+             
+              console.log("price " + i + ": " + state.sellers[i].products[j].pricePerNumber);
+              console.log("primaryPrice " + i + ": " + state.sellers[i].products[j].primaryPricePerNumber);
             }
-            state.price.push(p);
-            state.primaryPrice.push(pp);
-            state.numberOfProducts.push(np);
           }
         })
         .catch(e => {
@@ -57,64 +45,52 @@ export default createStore({
     },
     calTotalPrice(state, sellerNo) {
       var totalPrice = 0;
-      // state.totalPrice[sellerNo] = 0;
       for (var i = 0; i < state.sellers[sellerNo].products.length; i++) {
-        totalPrice += state.price[sellerNo][i];
-        console.log("state.price[sellerNo][i]: "+state.price[sellerNo][i]);
+        totalPrice += state.sellers[sellerNo].products[i].pricePerNumber;
+        // console.log("state.price[sellerNo][i]: "+state.price[sellerNo][i]);
       }
-      state.totalPrice[sellerNo] = totalPrice;
-      console.log("mutation func => totalPrice: "+state.totalPrice[sellerNo]);
+      state.sellers[sellerNo].totalPrice = totalPrice;
+      
+      console.log("mutation func => totalPrice: "+state.sellers[sellerNo].totalPrice);
     },
     increase(state, number) {
-      // console.log("sellerNo: " + number.sellerNo + " ,productNo: " + number.productNo);
-      if (state.numberOfProducts[number.sellerNo][number.productNo] < state.sellers[number.sellerNo].products[number.productNo].stock) {
-        state.numberOfProducts[number.sellerNo][number.productNo]++;
-        state.price[number.sellerNo][number.productNo] =
-          state.sellers[number.sellerNo].products[number.productNo].price * state.numberOfProducts[number.sellerNo][number.productNo];
+      if (state.sellers[number.sellerNo].products[number.productNo].numberOfProducts < state.sellers[number.sellerNo].products[number.productNo].stock) {
+        state.sellers[number.sellerNo].products[number.productNo].numberOfProducts++;
 
-        state.primaryPrice[number.sellerNo][number.productNo] =
-          state.sellers[number.sellerNo].products[number.productNo].primaryPrice * state.numberOfProducts[number.sellerNo][number.productNo];
-      }
+        state.sellers[number.sellerNo].products[number.productNo].pricePerNumber =
+          state.sellers[number.sellerNo].products[number.productNo].price * state.sellers[number.sellerNo].products[number.productNo].numberOfProducts;
+
+          state.sellers[number.sellerNo].products[number.productNo].primaryPricePerNumber =
+          state.sellers[number.sellerNo].products[number.productNo].primaryPrice * state.sellers[number.sellerNo].products[number.productNo].numberOfProducts;
+          
+          console.log("price " + number.sellerNo + ": " + state.sellers[number.sellerNo].products[number.productNo].pricePerNumber);
+          console.log("primaryPrice " + number.sellerNo + ": " + state.sellers[number.sellerNo].products[number.productNo].primaryPricePerNumber);
+          console.log("numberOfProducts " + number.sellerNo + ": " + state.sellers[number.sellerNo].products[number.productNo].numberOfProducts);
+        }
     },
     decrease(state, number) {
-      // console.log("sellerNo: " + number.sellerNo + " ,productNo: " + number.productNo);
-      if (state.numberOfProducts[number.sellerNo][number.productNo] > 1) {
-        state.numberOfProducts[number.sellerNo][number.productNo]--;
-        state.price[number.sellerNo][number.productNo] =
-          state.sellers[number.sellerNo].products[number.productNo].price * state.numberOfProducts[number.sellerNo][number.productNo];
+      if (state.sellers[number.sellerNo].products[number.productNo].numberOfProducts > 1) {
+        state.sellers[number.sellerNo].products[number.productNo].numberOfProducts--;
 
-        state.primaryPrice[number.sellerNo][number.productNo] =
-          state.sellers[number.sellerNo].products[number.productNo].primaryPrice * state.numberOfProducts[number.sellerNo][number.productNo];
+        state.sellers[number.sellerNo].products[number.productNo].pricePerNumber =
+          state.sellers[number.sellerNo].products[number.productNo].price * state.sellers[number.sellerNo].products[number.productNo].numberOfProducts;
 
-      }
+          state.sellers[number.sellerNo].products[number.productNo].primaryPricePerNumber =
+          state.sellers[number.sellerNo].products[number.productNo].primaryPrice * state.sellers[number.sellerNo].products[number.productNo].numberOfProducts;
+          
+          console.log("price " + number.sellerNo + ": " + state.sellers[number.sellerNo].products[number.productNo].pricePerNumber);
+          console.log("primaryPrice " + number.sellerNo + ": " + state.sellers[number.sellerNo].products[number.productNo].primaryPricePerNumber);
+          console.log("numberOfProducts " + number.sellerNo + ": " + state.sellers[number.sellerNo].products[number.productNo].numberOfProducts);
+        }
     },
     remove(state, number) {
-      state.sellers[number.sellerNo].products.splice(number.productNo, 1);
-      state.price[number.sellerNo].splice(number.productNo, 1);
-      state.primaryPrice[number.sellerNo].splice(number.productNo, 1);
-      state.numberOfProducts[number.sellerNo].splice(number.productNo, 1);
-      if (state.sellers[number.sellerNo].products.length == 0){
-        state.sellers.splice(number.sellerNo, 1);
-        state.price.splice(number.sellerNo, 1);
-        state.primaryPrice.splice(number.sellerNo, 1);
-        state.numberOfProducts.splice(number.sellerNo, 1);
-      }
-        console.log("remove=> products: "+state.sellers[number.sellerNo].products[0].price);
+        state.sellers[number.sellerNo].products.splice(number.productNo, 1);
+        if (state.sellers[number.sellerNo].products.length == 0){
+          state.sellers.splice(number.sellerNo, 1);
+        }
+        console.log("remove=> products: "+state.sellers[number.sellerNo].products.length);
         console.log("remove=> sellers: "+state.sellers.length);
     }
-    // updatePrices(state, number) {
-    //   console.log("sellerNo: "+number.sellerNo+" ,productNo: "+number.productNo);
-
-
-    //   state.price[number.sellerNo][number.productNo] =
-    //     state.sellers[number.sellerNo].products[number.productNo].price * state.numberOfProducts;
-
-    //   state.primaryPrice[number.sellerNo][number.productNo] =
-    //     state.sellers[number.sellerNo].products[number.productNo].primaryPrice * state.numberOfProducts;
-
-    //     // this.calTotalPrice();
-    //     // this.calFinalPrice();
-    // }
   },
   actions: {
     getApi: ({ commit }) => {
@@ -124,14 +100,12 @@ export default createStore({
       commit('calTotalPrice', sellerNo);
     },
     increase: ({ commit }, number) => {
-      // console.log("sellerNo: " + number.sellerNo + " ,productNo: " + number.productNo);
       commit('increase', number);
       setTimeout(()=>{
         commit('calTotalPrice', number.sellerNo);
       },500);     
     },
     decrease: ({ commit }, number) => {
-      // console.log("sellerNo: " + number.sellerNo + " ,productNo: " + number.productNo);
       commit('decrease', number);
       commit('calTotalPrice', number.sellerNo);
     },

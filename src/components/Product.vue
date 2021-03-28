@@ -1,38 +1,61 @@
 <template>
-  <div class="">
-    <div class="d-flex my-4 justify-content-end row px-5">
-      <p id="sellerName" class="text-right">{{seller.name}}</p>
-      <p id="az" class="ml-2">از</p>
-    </div>
-    <div class="d-flex row justify-content-end px-5 mx-md-5">
-      <div class="text-right my-auto mx-5">
-        <p id="sellerOwner" class="mb-2">{{seller.owner}}</p>
-        <p id="sellerCity">از {{seller.city}}</p>
-      </div>
-      <img class="sellerPic rounded-circle col-2 p-0" :src="seller.logo.url" alt="عکس صاحب فروشگاه" />
-    </div>
-    <div
-      class="py-3 border-bottom px-4"
-      id="product"
-      v-for="(product, l) of seller.products"
-      :key="l"
-    >
-      <shop :product="product" :sellerNumber="sellerNumber" :productNumber="l" />
-    </div>
-    <div class="pb-2">
-      <div class="row px-5 mb-3">
-        <div id="deliveryMsg" class="my-3 col-12 p-2 text-right">{{deliveryMsg}}</div>
-        <div id="discountCode" class="px-3 py-2">ثبت کد تخفیف غرفه</div>
-      </div>
-      <div class="d-flex justify-content-between pl-5 pr-3 pb-4">
-        <div>
-          <div id="totalTxt" class="row">جمع مبلغ برای {{seller.products.length}} کالا</div>
-          <div class="row mt-1">
-            <img class="toman" src="../assets/toman.svg" alt="تومان" />
-            <div id="totalNumber" class="mx-1">{{totalPrice[sellerNumber]}}</div>
-          </div>
+  <div>
+    <div class="d-flex justify-content-between">
+      <div class="col-md-9 justify-content-between pl-0">
+        <p id="productName" class="mt-2 text-right">{{product.name}}</p>
+        <div id="prices" class="d-flex align-items-end">
+          <img class="toman my-3" src="../assets/toman.svg" alt="تومان" />
+          <p class="mx-2">{{sellers[sellerNumber].products[productNumber].pricePerNumber}}</p>
+          <strike id="primaryPrice">
+            <p>{{sellers[sellerNumber].products[productNumber].primaryPricePerNumber}}</p>
+          </strike>
         </div>
-        <div id="continueShopping" class="my-auto px-3 py-2">ادامه خرید فقط از این غرفه</div>
+      </div>
+      <img id="productPic" class="col-md-3 p-0" :src="product.image.url" alt="عکس محصول" />
+    </div>
+    <div class="mt-2 d-flex justify-content-between">
+      <div id="saveText" class="border-bottom my-auto mb-4">ذخیره در لیست خرید بعدی</div>
+      <div class="d-flex justify-content-end">
+        <img
+          @click="remove({sellerNo: sellerNumber, productNo: productNumber})"
+          class="btn numberOptions rounded-circle m-2 p-1"
+          src="../assets/trash.png"
+          alt="remove"
+        />
+        <!-- <i
+          @click="remove({sellerNo: sellerNumber, productNo: productNumber})"
+          class="btn numberOptions fa-xs far fa-trash-alt rounded-circle m-2 p-2 d-flex justify-content-center align-items-center"
+        ></i>-->
+        <div class="d-flex justify-content-end">
+          <div class="d-flex numberOptions rounded-circle btn m-2 p-1">
+            <img
+              @click="increase({sellerNo: sellerNumber, productNo: productNumber})"
+              class="p-1 p-sm-0"
+              src="../assets/plus.png"
+              alt="increase"
+            />
+          </div>
+
+          <!-- <i
+            @click="increase({sellerNo: sellerNumber, productNo: productNumber})"
+            class="btn numberOptions fa-xs fas fa-plus rounded-circle m-2 p-2 d-flex justify-content-center align-items-center"
+          ></i>-->
+          <div
+            id="productCount"
+            class="my-2 d-flex justify-content-center align-items-center"
+          >{{sellers[sellerNumber].products[productNumber].numberOfProducts}}</div>
+          <div
+            @click="decrease({sellerNo: sellerNumber, productNo: productNumber})"
+            class="btn numberOptions rounded-circle m-2 p-1"
+          >
+            <img src="../assets/minus.png" alt="decrease" />
+          </div>
+
+          <!-- <i
+            @click="decrease({sellerNo: sellerNumber, productNo: productNumber})"
+            class="btn numberOptions fa-xs far fa-window-minimize rounded-circle m-2 p-2 d-flex justify-content-center align-items-end"
+          ></i> -->
+        </div>
       </div>
     </div>
   </div>
@@ -40,116 +63,89 @@
 
 <script>
 import { mapActions } from "vuex";
-import Shop from "./Shop.vue";
 
 export default {
-  data() {
-    return {
-      deliveryMsg: ".هورا! ارسال از این غرفه برای شما رایگان شد"
-    };
-  },
-  components: {
-    shop: Shop
-  },
-  props: ["seller", "sellerNumber"],
+  props: ["product", "sellerNumber", "productNumber"],
   computed: {
-    totalPrice() {
-      return this.$store.state.totalPrice;
+    sellers() {
+      return this.$store.state.sellers;
     }
   },
-  mounted() {
-    this.calTotalPrice(this.sellerNumber);
-  },
+
   methods: {
-    ...mapActions(["calTotalPrice"])
-    // getPersianNumbers() {
-    //   var map = [
-    //     "&#1776;",
-    //     "&#1777;",
-    //     "&#1778;",
-    //     "&#1779;",
-    //     "&#1780;",
-    //     "&#1781;",
-    //     "&#1782;",
-    //     "&#1783;",
-    //     "&#1784;",
-    //     "&#1785;"
-    //   ];
-    //   document.getElementById("cart").innerHTML = document
-    //     .getElementById("cart")
-    //     .innerHTML.replace(/\d(?=[^<>]*(<|$))/g, function($0) {
-    //       return map[$0];
-    //     });
-    // }
+    ...mapActions(["increase", "decrease", "remove", "calTotalPrice"])
   }
 };
 </script>
-
 <style scoped>
-.sellerPic {
-  width: 2.5rem;
-  height: 2.5rem;
-  position: absolute;
-}
-#sellerName {
-  font-size: 0.875rem;
-  font-weight: bold;
-}
-#az {
-  font-size: 0.875rem;
-  font-weight: 400;
-}
-#sellerOwner {
-  font-size: 0.75rem;
-  font-weight: 400;
-  color: #3e3e3e;
-  /* position: absolute; */
-}
-#sellerCity {
-  font-size: 0.625rem;
-  font-weight: 400;
-  color: #3e3e3e;
-  /* position: absolute; */
+#productPic {
+  width: 8.2rem;
+  height: 8.2rem;
+  border-radius: 0.8rem;
 }
 .toman {
-  width: 1rem;
-  height: 1rem;
+  width: 1.6rem;
+  height: 1.2rem;
 }
-/* @media (max-width: 360px) {
-  .toman {
-    min-width: 1rem;
-  }
-  #product {
-    font-size: 1.5rem;
-  }
-} */
-/* @media (min-width: 450px) {
-} */
-
-#continueShopping {
-  background-color: #df3856;
-  color: #fafafa;
-  border-radius: 100px;
-  font-size: 0.75rem;
-}
-#deliveryMsg {
-  background-color: #dff5f1;
-  color: #00786c;
-  font-size: 0.75rem;
-}
-#discountCode {
-  border-radius: 100px;
-  background-color: #eeeeee;
+#productName {
+  font-size: 1.2rem;
   color: #3e3e3e;
-  font-size: 0.625rem;
+}
+#saveText {
+  font-size: 1rem;
   font-weight: bold;
+  display: flex;
+  color: #7d7d7d;
 }
-#totalTxt,
-#totalNumber {
-  font-size: 0.75rem;
-  color: #535353;
+#prices {
+  position: absolute;
+  font-size: 1.2rem;
+  bottom: 0;
 }
-#totalNumber {
-  font-weight: 700;
+#primaryPrice {
+  color: #9d9d9d;
+}
+.numberOptions {
+  width: 2.4rem;
+  height: 2.4rem;
+  background-color: #eeeeee;
+  /* display: flex;
+  justify-content: center;
+  align-content: center; */
+}
+#productCount {
+  width: 2.58rem;
+  height: 2.33rem;
+  border-radius: 0.375rem;
+  border: 1px solid #eeeeee;
+  font-size: 1.4rem;
+}
+
+@media (min-width: 600px) {
+  #productPic {
+    width: 5.125rem;
+    height: 5.125rem;
+    border-radius: 0.5rem;
+  }
+  .toman {
+    width: 1rem;
+    height: 0.75rem;
+  }
+  #productName,
+  #prices {
+    font-size: 0.75rem;
+  }
+  #saveText {
+    font-size: 0.625rem;
+  }
+  .numberOptions {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  #productCount {
+    width: 1.61rem;
+    height: 1.46rem;
+    font-size: 0.875rem;
+  }
 }
 </style>
