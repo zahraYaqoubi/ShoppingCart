@@ -102,7 +102,7 @@ export default {
 }
 #sellerName {
   font-size: 1.4rem;
-  font-weight: bold;
+  font-family: "EstedadBold", Helvetica, Arial;
 }
 #locationIcon {
   width: 1.07rem;
@@ -110,16 +110,13 @@ export default {
 }
 #az {
   font-size: 1.4rem;
-  font-weight: 400;
 }
 #sellerOwner {
   font-size: 1.2rem;
-  font-weight: 400;
   color: #3e3e3e;
 }
 #sellerCity {
   font-size: 1rem;
-  font-weight: 400;
   color: #3e3e3e;
 }
 .toman {
@@ -142,7 +139,7 @@ export default {
   background-color: #eeeeee;
   color: #3e3e3e;
   font-size: 1rem;
-  font-weight: bold;
+  font-family: "EstedadBold", Helvetica, Arial;
 }
 #discountIcon{
   width: 1.5rem;
@@ -154,7 +151,7 @@ export default {
   color: #535353;
 }
 #totalNumber {
-  font-weight: 700;
+  font-family: "EstedadBold", Helvetica, Arial;
 }
 
 @media (min-width: 600px) {

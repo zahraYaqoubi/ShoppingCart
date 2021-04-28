@@ -11,7 +11,7 @@
           </strike>
         </div>
       </div>
-      <img id="productPic" class="col-md-3 p-0" :src="product.image.url" alt="عکس محصول" />
+      <img id="productPic" class="p-0" :src="product.image.url" alt="عکس محصول" />
     </div>
     <div class="mt-2 d-flex justify-content-between">
       <div id="saveText" class="border-bottom my-auto mb-4">ذخیره در لیست خرید بعدی</div>
@@ -93,7 +93,7 @@ export default {
 }
 #saveText {
   font-size: 1rem;
-  font-weight: bold;
+  font-family: "EstedadBold", Helvetica, Arial;
   display: flex;
   color: #7d7d7d;
 }

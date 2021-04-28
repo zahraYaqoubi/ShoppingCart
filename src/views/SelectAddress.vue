@@ -1,53 +1,59 @@
 <template>
-  <div id="bg" class="d-flex justify-content-center align-content-center">
-    <div class="p-md-5 col-md-4">
-      <ul class v-if="addresses">
-        <div
-          id="cart"
-          class="bg-light p-5 d-flex flex-column"
-          v-for="(address, i) of addresses"
-          :key="i"
-        >
-          <div class="d-flex justify-content-between">
-            <div id="newAddress" class="d-flex border m-2 p-2">
-              آدرس جدید
-              <i
-                @click="increase(i,l)"
-                class="btn fas fa-plus d-flex justify-content-center align-items-center"
-              ></i>
+  <div id="bg" class>
+    <div class>
+      <ul class="p-0">
+        <div id="cart" class="bg-white p-4 flex-column" v-for="(address, i) of addresses" :key="i">
+          <div class="d-flex justify-content-between mb-2">
+            <div id="newAddress" class="border px-4">
+              <p id="newAddressTxt" class="mr-2 my-auto">آدرس جدید</p>
+              <img @click="increase(i,l)" id="plusImg" src="../assets/plus.png" alt="increase" />
             </div>
-            <router-link class to="/cart" tag>
-              <i
-                class="btn numberOptions rounded-circle m-2 p-2 d-flex justify-content-center align-items-center fas fa-arrow-right"
-              ></i>
-            </router-link>
+            <div class="d-flex">
+              <p class="mr-1 my-auto" id="sendingAddressTxt">آدرس ارسال</p>
+              <router-link class="btn numberOptions rounded-circle ml-3 my-auto" to="/cart" tag>
+                <img @click="increase(i,l)" class src="../assets/BackArrow.png" alt="back" />
+              </router-link>
+            </div>
           </div>
-          <div class="d-flex justify-content-between">
-            <!-- <i
-              @click="decrease(i,l)"
-              class="btn numberOptions far fa-window-minimize fa-lg rounded-circle m-2 p-2 d-flex justify-content-center"
-            ></i>-->
-            <i
-              class="btn numberOptions rounded-circle m-2 p-2 d-flex justify-content-center align-items-center far fa-edit"
-            ></i>
-            <p class="productName text-secondary mt-2 text-right">به: {{ address.name }}</p>
-          </div>
-          <div class="form-check d-flex justify-content-end">
+
+          <!-- <div class="form-check d-flex justify-content-end">
             <input
               class="form-check-input"
               type="radio"
               name="flexRadioDefault"
               id="flexRadioDefault1"
             />
-            <label
-              class="form-check-label text-right mx-5"
-              for="flexRadioDefault1"
-            >{{address.addressInfo}}</label>
+            <label class="form-check-label text-right mx-5" for="flexRadioDefault1">
+              <div class="d-flex justify-content-between">
+                <div class="btn numberOptions rounded-circle m-2 p-2">
+                  <img src="../assets/EditIcon.png" alt="edit" />
+                </div>
+                <p class="addressDetails my-auto text-right">به: {{ address.name }}</p>
+              </div>
+              <p class="addressDetails">{{address.addressInfo}}</p>
+            </label>
+          </div> -->
+          <div class="d-flex justify-content-end">
+            <input
+              class=""
+              type="radio"
+              name="a"
+              id="a1"
+            />
+            <label class="" for="a1">
+              <div class="d-flex justify-content-between">
+                <div class="btn numberOptions rounded-circle m-2 p-2">
+                  <img src="../assets/EditIcon.png" alt="edit" />
+                </div>
+                <p class="addressDetails my-auto text-right">به: {{ address.name }}</p>
+              </div>
+              <p class="addressDetails">{{address.addressInfo}}</p>
+            </label>
           </div>
           <!-- <div class="custom-control custom-radio">
             <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input" />
             <label class="custom-control-label text-left" for="customRadio1">{{address.addressInfo}}</label>
-          </div> -->
+          </div>-->
         </div>
         <div id="emptyDistance" class="bg-light"></div>
         <div class="p-5 bg-light">
@@ -125,15 +131,21 @@ export default {
   }
 }
 @media (min-width: 450px) {
-  .productName {
+  .addressDetails {
     font-size: larger;
   }
 }
-
+.addressDetails {
+  font-size: 1.4rem;
+  color: #3E3E3E;
+}
 .numberOptions {
-  width: 5rem;
-  height: 5rem;
-  background-color: rgb(231, 238, 241);
+  width: 4rem;
+  height: 4rem;
+  background-color: #eeeeee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .stock {
   width: 5rem;
@@ -174,8 +186,22 @@ export default {
   min-width: 2rem;
   min-height: 2rem;
 }
+#plusImg {
+  width: 1.6rem;
+  height: 1.6rem;
+}
 #newAddress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 35px;
+}
+#sendingAddressTxt {
+  font-size: 1.6rem;
+}
+#newAddressTxt {
+  font-size: 1.4rem;
+  font-family: "EstedadBold", Helvetica, Arial;
 }
 .custom-control-input:checked ~ .custom-control-label::before {
   /* color: rgb(170, 87, 87); */

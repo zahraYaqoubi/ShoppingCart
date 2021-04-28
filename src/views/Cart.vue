@@ -1,7 +1,7 @@
 <template>
   <div id="bg" class="d-flex justify-content-center">
     <div class="bg-white col col-md-6 px-0">
-      <ul class="col-12 p-0" v-if="sellers">
+      <ul class="col-12 p-0" v-if="sellers.length>0">
         <div id="cart" class="pt-1" v-for="(seller, i) of sellers" :key="i">
           <vendor :seller="seller" :sellerNumber="i"></vendor>
         </div>
@@ -25,6 +25,9 @@
           </div>
         </div>
       </ul>
+      <div id="cartEmpty" v-else>
+        <p>!!محصولی برای نمایش موجود نمی باشد</p>
+      </div>
     </div>
   </div>
 </template>
@@ -77,6 +80,7 @@ export default {
 <style scoped>
 #bg {
   background-color: rgb(218, 218, 218);
+  height: 100%;
 }
 #cart{
   border-bottom: rgb(218, 218, 218) 2px;
@@ -102,7 +106,13 @@ export default {
   color: #535353;
 }
 #totalNumber {
-  font-weight: 700;
+  font-family: "EstedadBold", Helvetica, Arial;
+}
+#cartEmpty{
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @media (min-width: 600px) {
@@ -117,6 +127,5 @@ export default {
 #totalNumber {
   font-size: 0.75rem;
 }
-
 }
 </style>
